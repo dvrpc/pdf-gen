@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PDF Generator</title>
+    <style>
+      body {
+        background: #222;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/pdf" method="post">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+        <div>
+          <h2>HTML</h2>
+          <div
+            id="html"
+            style="position: relative; width: 100%; min-height: 400px"
+          ></div>
+        </div>
+        <div>
+          <h2>CSS</h2>
+          <div
+            id="css"
+            style="position: relative; width: 100%; min-height: 400px"
+          ></div>
+        </div>
+      </div>
+      <script
+        src="https://unpkg.com/ace-builds@1.37.5/src-min/ace.js"
+        type="text/javascript"
+        charset="utf-8"
+      ></script>
+      <script
+        src="https://unpkg.com/ace-builds@1.37.5/src-min/mode-html.js"
+        type="text/javascript"
+        charset="utf-8"
+      ></script>
+      <script
+        src="https://unpkg.com/ace-builds@1.37.5/src-min/mode-css.js"
+        type="text/javascript"
+        charset="utf-8"
+      ></script>
+
+      <script>
+        var htmleditor = ace.edit("html");
+        var HtmlMode = ace.require("ace/mode/html").Mode;
+        htmleditor.session.setMode(new HtmlMode());
+        htmleditor.setValue(localStorage.getItem("html") || "");
+        htmleditor.on("change", function () {
+          document.querySelector("input[name=html]").value =
+            htmleditor.getValue();
+          localStorage.setItem("html", htmleditor.getValue());
+        });
+
+        var csseditor = ace.edit("css");
+        var CssMode = ace.require("ace/mode/css").Mode;
+        csseditor.session.setMode(new CssMode());
+        csseditor.setValue(localStorage.getItem("css") || "");
+        csseditor.on("change", function () {
+          document.querySelector("input[name=css]").value =
+            csseditor.getValue();
+          localStorage.setItem("css", csseditor.getValue());
+        });
+      </script>
+      <input type="hidden" name="html" />
+      <input type="hidden" name="css" />
+      <input
+        type="submit"
+        value="Submit"
+        style="
+          background-color: #0078ae;
+          padding: 5px 10px;
+          border-radius: 8px;
+          color: white;
+        "
+      />
+    </form>
+  </body>
+</html>
