@@ -1,5 +1,6 @@
 black
-pylint
 pycodestyle
-sanic
-weasyprint
+pydyf==0.10.0
+pylint
+sanic==24.6.0
+weasyprint==61.2

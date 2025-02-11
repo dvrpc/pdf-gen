@@ -5,16 +5,24 @@ import weasyprint
 from weasyprint.text.fonts import FontConfiguration
 
 app = Sanic(__name__)
-
-app.static("/", "static/index.html")
+# Set SANIC_SERVER_NAME env variable to the prefix relative path (no starting slash)
+app.config.SERVER_NAME = getattr(app.config, "SERVER_NAME", "")
+app.static(app.config.SERVER_NAME, "static/index.html")
 
 
 @app.post("/pdf")
 async def get_api(request: Request):
-    return raw(html_to_pdf(request.form["html"][0], request.form["css"][0]), content_type="application/pdf")
+    if not request.form:
+        return raw(html_to_pdf(), content_type="application/pdf")
+
+    return raw(
+        html_to_pdf(request.form.get("html") or "",
+                    request.form.get("css") or ""),
+        content_type="application/pdf",
+    )
 
 
-def html_to_pdf(html: str = "", css: str = "") -> io.BytesIO:
+def html_to_pdf(html: str = "", css: str = ""):
     # print html and css to PDF buffer using weasyprint
     font_config = FontConfiguration()
     stylesheets = [weasyprint.CSS(string=css)]
@@ -22,9 +30,9 @@ def html_to_pdf(html: str = "", css: str = "") -> io.BytesIO:
     pdf_document = prepared_pdf_html.render(
         font_config=font_config,
         stylesheets=stylesheets,
-        optimize_size=('images', 'fonts'),
+        optimize_size=("images", "fonts"),
     )
-    pdf_file: bytes = pdf_document.write_pdf(pdf_variant='pdf/a-3b')
-    pdf_io = io.BytesIO(pdf_file)
+    pdf_file = pdf_document.write_pdf(pdf_variant="pdf/a-3b")
+    pdf_io = io.BytesIO(pdf_file if pdf_file else bytes())
     pdf_io.seek(0)
     return pdf_io.getbuffer()

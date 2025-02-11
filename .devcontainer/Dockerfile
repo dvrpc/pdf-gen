@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.8
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /workspaces
@@ -9,5 +9,4 @@ RUN apt-get update && \
     apt clean && \
     rm -rf /var/cache/apt/*
 RUN python -m pip install -r requirements.txt 
-RUN sanic server:app
 USER vscode
