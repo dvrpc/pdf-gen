@@ -1,12 +1,22 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.8
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-WORKDIR /workspaces
-COPY requirements.txt . 
-RUN apt-get update && \
-    apt-get install -y gcc libpq-dev \
-    libcairo2 libcairo2-dev libpangocairo-1.0-0 weasyprint && \
-    apt clean && \
-    rm -rf /var/cache/apt/*
-RUN python -m pip install -r requirements.txt 
-USER vscode
+FROM debian
+
+ARG USER=vscode
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update \
+    && apt install -y --no-install-recommends sudo git bash curl wget ca-certificates gcc libpq-dev \
+    libcairo2 libcairo2-dev libpangocairo-1.0-0 weasyprint \
+    && apt clean \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -s /usr/bin/bash ${USER} \
+    && echo "${USER} ALL=(ALL) NOPASSWD: ALL" >/etc/sudoers.d/${USER} \
+    && chmod 0440 /etc/sudoers.d/${USER}
+
+USER ${USER}
+ARG HOME=/home/${USER}
+WORKDIR ${HOME}
+
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh

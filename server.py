@@ -16,8 +16,7 @@ async def get_api(request: Request):
         return raw(html_to_pdf(), content_type="application/pdf")
 
     return raw(
-        html_to_pdf(request.form.get("html") or "",
-                    request.form.get("css") or ""),
+        html_to_pdf(request.form.get("html") or "", request.form.get("css") or ""),
         content_type="application/pdf",
     )
 
@@ -32,7 +31,7 @@ def html_to_pdf(html: str = "", css: str = ""):
         stylesheets=stylesheets,
         optimize_size=("images", "fonts"),
     )
-    pdf_file = pdf_document.write_pdf(pdf_variant="pdf/a-3b")
+    pdf_file = pdf_document.write_pdf(pdf_variant="pdf/ua-1")
     pdf_io = io.BytesIO(pdf_file if pdf_file else bytes())
     pdf_io.seek(0)
     return pdf_io.getbuffer()
