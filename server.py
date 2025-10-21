@@ -24,7 +24,7 @@ async def get_api(request: Request):
 def html_to_pdf(html: str = "", css: str = ""):
     # print html and css to PDF buffer using weasyprint
     font_config = FontConfiguration()
-    stylesheets = [weasyprint.CSS(string=css)]
+    stylesheets = [weasyprint.CSS(string=css, font_config=font_config)]
     prepared_pdf_html = weasyprint.HTML(string=html)
     pdf_document = prepared_pdf_html.render(
         font_config=font_config,
