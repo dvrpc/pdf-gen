@@ -1,0 +1,4 @@
+pydyf==0.11.*
+ruff==0.14.*
+sanic==25.3.*
+weasyprint==66.0.*
