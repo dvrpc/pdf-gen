@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:trixie-slim
 
 ARG USER=vscode
 ARG DEBIAN_FRONTEND=noninteractive
